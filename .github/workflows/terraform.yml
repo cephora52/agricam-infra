@@ -1,0 +1,47 @@
+name: AgriCam Terraform CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  terraform:
+    name: Terraform Pipeline
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: environnements/dev
+
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: environnements/dev
+
+      - name: Terraform Plan
+        run: terraform plan
+        working-directory: environnements/dev
+
+  security:
+
+    name: Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: environnements/dev
