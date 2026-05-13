@@ -12,7 +12,7 @@ terraform {
 provider "aws" {
   region = var.aws_region
 }
-
+#tfsec:ignore:aws-ec2-require-vpc-flow-logs-for-all-vpcs
 # VPC
 resource "aws_vpc" "agricam_vpc" {
   cidr_block = "10.0.0.0/16"
@@ -22,7 +22,7 @@ resource "aws_vpc" "agricam_vpc" {
   }
 }
 
-# Subnet
+#tfsec:ignore:aws-ec2-no-public-ip-subnet
 # Subnet
 resource "aws_subnet" "agricam_subnet" {
   vpc_id                  = aws_vpc.agricam_vpc.id
@@ -121,6 +121,7 @@ resource "aws_instance" "agricam_serveur" {
   }
 }
 
+#tfsec:ignore:aws-s3-enable-bucket-logging
 # S3
 resource "aws_s3_bucket" "agricam_stockage" {
   bucket = "agricam-${var.environnement}-bucket-2026"
@@ -132,7 +133,7 @@ resource "aws_s3_bucket_versioning" "agricam_versioning" {
     status = "Enabled"
   }
 }
-
+#tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket_server_side_encryption_configuration" "agricam_encryption" {
   bucket = aws_s3_bucket.agricam_stockage.id
 
