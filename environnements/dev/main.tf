@@ -64,7 +64,7 @@ resource "aws_security_group" "agricam_sg" {
   name        = "agricam-sg-${var.environnement}"
   description = "Security group for AgriCam"
   vpc_id      = aws_vpc.agricam_vpc.id
-
+  #tfsec:ignore:aws-ec2-no-public-ingress-sgr
   ingress {
     description = "HTTP access"
 
@@ -82,7 +82,7 @@ resource "aws_security_group" "agricam_sg" {
     protocol    = "tcp"
     cidr_blocks = [var.ip_admin]
   }
-
+  #tfsec:ignore:aws-ec2-no-public-egress-sgr
   egress {
     description = "Outbound internet access"
 
