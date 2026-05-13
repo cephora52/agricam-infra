@@ -1,4 +1,4 @@
-name: AgriCam Terraform CI/CD
+name: AgriCam DevSecOps Pipeline
 
 on:
   push:
@@ -7,13 +7,26 @@ on:
 
 jobs:
 
-  terraform:
-    name: Terraform Pipeline
+  format:
+    name: Terraform Format
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Checkout code
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform FMT
+        run: terraform fmt -check -recursive
+
+  validate:
+    name: Terraform Validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Terraform
@@ -27,21 +40,82 @@ jobs:
         run: terraform validate
         working-directory: environnements/dev
 
-      - name: Terraform Plan
-        run: terraform plan
-        working-directory: environnements/dev
+  lint:
+    name: Terraform Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+
+      - name: Run TFLint
+        run: |
+          cd environnements/dev
+          tflint --init
+          tflint
 
   security:
-
     name: Security Scan
     runs-on: ubuntu-latest
 
     steps:
-
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Run Checkov
         uses: bridgecrewio/checkov-action@master
         with:
           directory: environnements/dev
+          soft_fail: true
+
+      - name: Run tfsec
+        uses: aquasecurity/tfsec-action@v1.0.3
+        with:
+          working_directory: environnements/dev
+
+  plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    needs:
+      - format
+      - validate
+      - lint
+      - security
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: environnements/dev
+
+      - name: Terraform Plan
+        run: terraform plan
+        working-directory: environnements/dev
+
+  deploy:
+    name: Terraform Deploy
+    runs-on: ubuntu-latest
+    needs: plan
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: environnements/dev
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        working-directory: environnements/dev
