@@ -61,9 +61,13 @@ resource "aws_route_table_association" "agricam_rta" {
 }
 # Security Group
 resource "aws_security_group" "agricam_sg" {
-  vpc_id = aws_vpc.agricam_vpc.id
+  name        = "agricam-sg-${var.environnement}"
+  description = "Security group for AgriCam"
+  vpc_id      = aws_vpc.agricam_vpc.id
 
   ingress {
+    description = "HTTP access"
+
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
@@ -71,6 +75,8 @@ resource "aws_security_group" "agricam_sg" {
   }
 
   ingress {
+    description = "SSH admin access"
+
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
@@ -78,11 +84,11 @@ resource "aws_security_group" "agricam_sg" {
   }
 
   egress {
-    description = "Allow outbound traffic"
+    description = "Outbound internet access"
 
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
@@ -97,9 +103,18 @@ resource "aws_instance" "agricam_serveur" {
   instance_type               = var.type_instance
   subnet_id                   = aws_subnet.agricam_subnet.id
   associate_public_ip_address = true
-  vpc_security_group_ids      = [aws_security_group.agricam_sg.id]
+
+  vpc_security_group_ids = [aws_security_group.agricam_sg.id]
 
   key_name = aws_key_pair.agricam_keypair.key_name
+
+  metadata_options {
+    http_tokens = "required"
+  }
+
+  root_block_device {
+    encrypted = true
+  }
 
   tags = {
     Name = "agricam-serveur-${var.environnement}"
@@ -109,4 +124,30 @@ resource "aws_instance" "agricam_serveur" {
 # S3
 resource "aws_s3_bucket" "agricam_stockage" {
   bucket = "agricam-${var.environnement}-bucket-2026"
+}
+resource "aws_s3_bucket_versioning" "agricam_versioning" {
+  bucket = aws_s3_bucket.agricam_stockage.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "agricam_encryption" {
+  bucket = aws_s3_bucket.agricam_stockage.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "agricam_pab" {
+  bucket = aws_s3_bucket.agricam_stockage.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
