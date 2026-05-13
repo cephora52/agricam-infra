@@ -1,5 +1,27 @@
-variable "aws_region" {}
-variable "environnement" {}
-variable "type_instance" {}
-variable "ami_id" {}
-variable "ip_admin" {}
+variable "aws_region" {
+  description = "AWS region"
+  type        = string
+  default     = "af-south-1"
+}
+
+variable "environnement" {
+  description = "Environment name"
+  type        = string
+  default     = "dev"
+}
+
+variable "type_instance" {
+  description = "EC2 instance type"
+  type        = string
+  default     = "t3.micro"
+}
+
+variable "ami_id" {
+  description = "Ubuntu AMI ID"
+  type        = string
+}
+
+variable "ip_admin" {
+  description = "Admin IP address"
+  type        = string
+}

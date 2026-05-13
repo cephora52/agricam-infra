@@ -27,7 +27,7 @@ resource "aws_subnet" "agricam_subnet" {
   cidr_block              = "10.0.1.0/24"
   availability_zone       = "${var.aws_region}a"
   map_public_ip_on_launch = true
- 
+
 
   tags = {
     Name = "agricam-subnet-${var.environnement}"
@@ -76,6 +76,8 @@ resource "aws_security_group" "agricam_sg" {
   }
 
   egress {
+    description = "Allow outbound traffic"
+
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
@@ -89,11 +91,11 @@ resource "aws_key_pair" "agricam_keypair" {
 }
 # EC2
 resource "aws_instance" "agricam_serveur" {
-  ami           = var.ami_id
-  instance_type = var.type_instance
-  subnet_id     = aws_subnet.agricam_subnet.id
+  ami                         = var.ami_id
+  instance_type               = var.type_instance
+  subnet_id                   = aws_subnet.agricam_subnet.id
   associate_public_ip_address = true
-  vpc_security_group_ids = [aws_security_group.agricam_sg.id]
+  vpc_security_group_ids      = [aws_security_group.agricam_sg.id]
 
   key_name = aws_key_pair.agricam_keypair.key_name
 
