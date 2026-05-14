@@ -103,11 +103,10 @@ resource "aws_security_group" "agricam_sg" {
 
 # SSH Key Pair
 resource "aws_key_pair" "agricam_keypair" {
-  key_name = "agricam-keypair-${var.environnement}"
+  key_name = "agricam-keypair-dev-1"
 
   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDGFB9jJOSBPIlXRNL9pGATkN/HqQFFmucUvaOh/2iWMpEKW6WjepuioV4PFYjhY41O3zFcP320bheYtrFwxfghB62VApHiW0yIzJUK6pobnzoJNkKniqwlxtMKKEB/SPE1wwvdoDIyehSclHBjtIW2AzJk6h9l5grh4Zg5Qzxb2c7izTvFePqCe+evyBGIGhUhp8JaTvqw++0AXJWKhsU21nTkShs1/eD+F5bqIXCR2DDJOZlVuSfBI+XR7iOf+4TuXLFaejbv+wfJ6BL5A14RU4ciPJlFnDOH29L754AbnObnIE5mbQ5JitFYl1ISFXG6tWXH+5f4Dsdc8YeYolWDPdlPfTpxHHi5jtRnMQt0phRW2ypnQGSgoUuDERoMH6gWGzFWbt57k7A4E7Cvm/7WPaK5NlGnGFMMDNuSL+a1KcztE2HiOIyp0mSFtIDZ/+CwdqDIcBYRcJi3YVdxj7fKeZ5bqDiLIWcElNt/Xl0i2j5ps7NKM5aElXD1sBpjcqbdPKSAm+dlLsumpGTRCOUm3E/elUMXn1GCFogrSnPMjiA26VdF1j0A60otXu3iA/6MUKvycKuz/wGpt3UFAT2+qtBa9C6Vmfcl0tjFSbuySazgPW2cutW2v7i658BIqxeNnC6+0ENOkdIndWzzySGKzJvVyEqvbrdLCsYM1oUNCw== cephora@DESKTOP-63DRJ1P"
 }
-
 # EC2
 resource "aws_instance" "agricam_serveur" {
   ami                         = var.ami_id
@@ -134,7 +133,7 @@ resource "aws_instance" "agricam_serveur" {
 
 # S3 Bucket
 resource "aws_s3_bucket" "agricam_stockage" { #tfsec:ignore:aws-s3-enable-bucket-logging
-  bucket = "agricam-${var.environnement}-bucket-2026"
+  bucket = "agricam-dev-bucket-2026-1"
 }
 
 resource "aws_s3_bucket_versioning" "agricam_versioning" {
