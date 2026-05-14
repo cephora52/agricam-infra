@@ -23,5 +23,5 @@ variable "ami_id" {
 
 variable "ip_admin" {
   description = "Admin IP address"
-  type        = string  
+  type        = string
 }
