@@ -19,9 +19,11 @@ variable "type_instance" {
 variable "ami_id" {
   description = "Ubuntu AMI ID"
   type        = string
+  default     = "ami-0c54c7c5f6d73d4f0"
 }
 
 variable "ip_admin" {
   description = "Admin IP address"
   type        = string
+  default     = "0.0.0.0/0"
 }
