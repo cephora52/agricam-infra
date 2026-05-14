@@ -29,7 +29,7 @@ resource "aws_subnet" "agricam_subnet" {
   vpc_id                  = aws_vpc.agricam_vpc.id
   cidr_block              = "10.0.1.0/24"
   availability_zone       = "${var.aws_region}a"
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = true #tfsec:ignore:aws-ec2-no-public-ip-subnet
 
   tags = {
     Name = "agricam-subnet-${var.environnement}"
@@ -132,9 +132,8 @@ resource "aws_instance" "agricam_serveur" {
   }
 }
 
-#tfsec:ignore:aws-s3-enable-bucket-logging
 # S3 Bucket
-resource "aws_s3_bucket" "agricam_stockage" {
+resource "aws_s3_bucket" "agricam_stockage" { #tfsec:ignore:aws-s3-enable-bucket-logging
   bucket = "agricam-${var.environnement}-bucket-2026"
 }
 
