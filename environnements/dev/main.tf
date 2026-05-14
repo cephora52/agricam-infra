@@ -133,7 +133,7 @@ resource "aws_instance" "agricam_serveur" {
 
 # S3 Bucket
 resource "aws_s3_bucket" "agricam_stockage" { #tfsec:ignore:aws-s3-enable-bucket-logging
-  bucket = "agricam-dev-bucket-cephora-2026"
+  bucket = "agricam-cephora-52-dev-2026-xyz"
 }
 
 resource "aws_s3_bucket_versioning" "agricam_versioning" {
