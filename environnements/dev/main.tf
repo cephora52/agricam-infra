@@ -13,8 +13,8 @@ provider "aws" {
   region = var.aws_region
 }
 
-#tfsec:ignore:aws-ec2-require-vpc-flow-logs-for-all-vpcs
 # VPC
+#tfsec:ignore:aws-ec2-require-vpc-flow-logs-for-all-vpcs
 resource "aws_vpc" "agricam_vpc" {
   cidr_block = "10.0.0.0/16"
 
