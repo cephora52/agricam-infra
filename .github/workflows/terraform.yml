@@ -146,5 +146,9 @@ jobs:
         working-directory: environnements/dev
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+
+        run: |
+          terraform apply -auto-approve \
+            -var="ami_id=ami-0c54c7c5f6d73d4f0" \
+            -var="ip_admin=102.244.78.45/32"
         working-directory: environnements/dev
