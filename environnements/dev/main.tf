@@ -139,7 +139,7 @@ resource "aws_s3_bucket" "agricam_stockage" {
   bucket = "agricam-${var.environnement}-stockage"
 
   tags = {
-    Name = "agricam-stockage-${var.environnement}"
+    Name        = "agricam-stockage-${var.environnement}"
     Environment = var.environnement
   }
 }
